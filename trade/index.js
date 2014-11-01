@@ -1,10 +1,43 @@
 var backend = require('./sim');
 
+var express = require('express');
+var app = express();
+
+var snapshots = [];
+var currentSnap = 0;
+
+var bot = require('./bot');
+
 backend.prep(function () {
-    var bot = require('./bot');
     bot.setup(backend);
-    require('./strategy');
+    var sContext = require('./strategy').context;
+    bot.useStat(function (data, stats, context) {
+        snapshots.push(clone({
+            data: data,
+            stats: stats,
+            context: context
+        }));
+    });
+
     bot.start(0, 10, function (context) {
-        context.count = 0;
+        for (var key in sContext) {
+            context[key] = sContext[key];
+        }
     });
 });
+
+function clone(a) {
+    return JSON.parse(JSON.stringify(a));
+}
+
+app.get('/snapshots', function (req, res) {
+    res.send({snapshots: snapshots, running: bot.isRunning()});
+    currentSnap = snapshots.length;
+});
+
+app.post('/stop', function (req, res) {
+    bot.stop();
+    res.send({msg: 'stopping bot'});
+});
+
+app.listen(3000);

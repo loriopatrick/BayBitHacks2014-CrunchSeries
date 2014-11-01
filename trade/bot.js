@@ -33,6 +33,10 @@ exports.sell = function (quantity) {
     currentBtcOrder -= quantity;
 };
 
+exports.isRunning = function () {
+    return running;
+};
+
 function tick(priceData, orderResult) {
     if (!priceData) return doShutdown();
 
