@@ -3,4 +3,4 @@ node_modules/
 .idea/
 website/bot/lib/*
 .DS_Store
-portal/settings.js
+portal/settings.js.js

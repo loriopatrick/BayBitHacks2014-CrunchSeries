@@ -37,7 +37,8 @@ module.exports = function (attr) {
         });
     });
 
-    var command = [
+    var command = settings.BUILD_BOT_COMMAND([
+        'node',
         path.join(dest + '/index.js'),
         port,
             '"' + type + '"',
@@ -49,10 +50,10 @@ module.exports = function (attr) {
         settings.updateInterval,
         settings.usdTransFee,
         settings.usdSpread
-    ].join(' ');
+    ]);
 
     function spawn() {
-        var process = childProcess.exec('node ' + command);
+        var process = childProcess.exec(command);
         process.on('error', function (error) {
             badBot = error;
         });
