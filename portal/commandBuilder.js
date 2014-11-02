@@ -13,7 +13,7 @@ function buildDockerCommand(parts) {
         '-p',
             parts[2] + ':' + parts[2],
         settings.DOCKER_IMAGE,
-        'node --max-old-space-size=1900 /bot/index.js'
+        'node /bot/index.js'
     ];
 
     for (var i = 2; i < parts.length; ++i) {
