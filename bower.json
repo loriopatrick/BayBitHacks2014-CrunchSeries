@@ -16,6 +16,7 @@
   "dependencies": {
     "bootstrap": "~3.3.0",
     "jquery": "~2.1.1",
-    "codemirror": "~4.7.0"
+    "codemirror": "~4.7.0",
+    "flot": "~0.8.3"
   }
 }
