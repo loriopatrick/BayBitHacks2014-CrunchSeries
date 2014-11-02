@@ -30,12 +30,21 @@ exports.priceSource = function (callback) {
 exports.orderExecutor = function (btcOrder, callback) {
     if (!btcOrder) return callback(null);
 
-    callback({
-        usdDelta: -btcOrder * currentPrice,
+    var realPrice = currentPrice + btcOrder / Math.abs(btcOrder) * exports.usdSpread;
+
+    var order = {
+        usdDelta: -btcOrder * realPrice - exports.usdTransFee,
         btcDelta: btcOrder,
         estimatedPrice: currentPrice,
-        realPrice: currentPrice
-    });
+        realPrice: realPrice
+    };
+
+    if (btcOrder < 0 && order.usdDelta < 0) {
+        order.usdDelta = 0;
+        order.btcDelta = 0;
+    }
+
+    callback(order);
 };
 
 exports.prep = function (callback) {
