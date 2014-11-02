@@ -11,8 +11,8 @@ function newUser() {
         settings: {
             init: {usd: 100, btc: 0},
             testRange: {
-                from: new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 10),
-                to: new Date()
+                from: new Date().getTime() - 1000 * 60 * 60 * 24 * 10,
+                to: new Date().getTime()
             },
             updateInterval: 200
         },
@@ -34,10 +34,10 @@ function createUser(accessToken, callback) {
                 if (err) throw err;
 
                 if (user) {
-                    return users.update({'_id': user._id}, {
+                    return users.update({'_id': user._id}, {$set: {
                         accessToken: token,
                         expire: new Date().getTime() + accessToken['expires_in'] * 1000
-                    }, function (err) {
+                    }}, function (err) {
                         if (err) throw err;
                         return callback(user.loginKey);
                     });
@@ -83,13 +83,13 @@ module.exports = function (app) {
     app.use('/api', function (req, res, next) {
         var token = req.query.token;
         if (!token) {
-            return res.redirect('/');
+            return res.send('unauthorized', 401);
         }
 
         var users = database.mongo.collection('users');
         users.findOne({loginKey: token}, function (err, user) {
             if (err) throw err;
-            if (!user) return res.redirect('/');
+            if (!user) return res.send('unauthorized', 401);
             req.user = user;
             next();
         });

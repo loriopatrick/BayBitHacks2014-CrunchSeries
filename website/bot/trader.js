@@ -10,11 +10,12 @@ var lastTime = 0;
 var settings = null;
 
 $(function () {
-    $.get('/api/get-state?token=' + token, function (state) {
-        settings = state.settings;
+    $.get('/api/account?token=' + token, function (account) {
+        settings = account.settings;
+        renderSettings();
 
         mirror = CodeMirror($('#code').get(0), {
-            value: state.code,
+            value: account.code,
             mode: 'javascript',
             viewportMargin: Infinity,
             lineWrapping: true
@@ -24,6 +25,49 @@ $(function () {
         pollData(); // tie into any current running bots
     });
 });
+
+function renderSettings() {
+    function formatDate(date) {
+        date = new Date(date);
+        function addZeros(value, minSize) {
+            value = '' + value;
+            while (value.length < minSize) {
+                value = '0' + minSize;
+            }
+            return value;
+        }
+        return date.getFullYear() + '/' + addZeros(date.getMonth() + 1, 2) + '/' + addZeros(date.getDate());
+    }
+
+    $('#start-usd').val(settings.init.usd);
+    $('#start-btc').val(settings.init.btc);
+
+    $('#from-date').val(formatDate(settings.testRange.from));
+    $('#to-date').val(formatDate(settings.testRange.to));
+    $('#update-interval').val(settings.updateInterval);
+}
+
+function updateSettings() {
+    function extractDate(str) {
+        var parts = str.split('/');
+        return new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2])).getTime();
+    }
+
+    settings.init.usd = parseFloat($('#start-usd').val());
+    settings.init.btc = parseFloat($('#start-btc').val());
+
+    settings.testRange.from = extractDate($('#from-date').val());
+    settings.testRange.to = extractDate($('#to-date').val());
+    settings.updateInterval = parseInt($('#update-interval').val());
+
+
+    $.ajax({
+        type: 'POST',
+        url: '/api/settings?token=' + token,
+        data: JSON.stringify(settings),
+        contentType: 'application/json; charset=utf-8'
+    });
+}
 
 function openSettings() {
     $('#settings').modal();
@@ -40,7 +84,12 @@ function liveTrade() {
 
 function run() {
     reset();
-    $.post('/api/run-bot?token=' + token, {code: mirror.getValue()});
+    $.ajax({
+        type: 'POST',
+        url: '/api/code?token=' + token,
+        data: JSON.stringify({code: mirror.getValue()}),
+        contentType: 'application/json; charset=utf-8'
+    });
     pollData();
 }
 
