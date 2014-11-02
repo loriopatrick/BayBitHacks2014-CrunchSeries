@@ -11,6 +11,6 @@ exports.PUBLIC_PORT = 5050;
 
 exports.BOT_PORT_RATE = [3000, 5000];
 
-exports.BUILD_BOT_COMMAND = function (parts) {
-    return parts.join(' ');
-};
+exports.USE_DOCKER = false;
+
+exports.DOCKER_IMAGE = 'ubuntu-node';

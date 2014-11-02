@@ -5,6 +5,8 @@ var childProcess = require('child_process');
 var ncp = require('ncp');
 var request = require('request');
 
+var commandBuilder = require('./commandBuilder');
+
 var BOT_SRC = path.join(__dirname, '../bot');
 var BOTS_DEST = path.join(__dirname, '../bots');
 
@@ -37,7 +39,7 @@ module.exports = function (attr) {
         });
     });
 
-    var command = settings.BUILD_BOT_COMMAND([
+    var command = commandBuilder([
         'node',
         path.join(dest + '/index.js'),
         port,
