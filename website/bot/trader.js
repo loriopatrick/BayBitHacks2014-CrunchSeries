@@ -124,8 +124,8 @@ function run(type) {
 
 function reset() {
     data = [
-        [],
-        []
+        {data:[], label: 'Market', color: 'rgb(143, 198, 242)'},
+        {data:[], label: 'Bot', color: 'rgb(242, 198, 143)'}
     ];
     lastTime = 0;
     $('#trans').empty();
@@ -202,8 +202,8 @@ function updateData(snapshots, index) {
         }
 
         lastTime = s.data.time;
-        data[0].push([s.data.time, s.stats.pricePerformance]);
-        data[1].push([s.data.time, s.stats.balancePerformance]);
+        data[0].data.push([s.data.time, s.stats.pricePerformance]);
+        data[1].data.push([s.data.time, s.stats.balancePerformance]);
     }
 
     if (snapshots.length) {
@@ -239,7 +239,6 @@ function chart(chart, data) {
             lines: { show: true, fill: false},
             points: { show: false}
         },
-        grid: { color: 'transparent' },
         xaxis: {
             color: 'rgba(0, 0, 0, 0.5)',
             font: { color: 'black', family: 'sans-serif', size: 11},
@@ -248,7 +247,6 @@ function chart(chart, data) {
         yaxis: {
             color: 'rgba(0, 0, 0, 0.5)',
             font: { color: 'black', family: 'sans-serif', size: 11}
-        },
-        colors: ['rgb(143, 198, 242)', 'rgb(242, 198, 143)']
+        }
     });
 }
