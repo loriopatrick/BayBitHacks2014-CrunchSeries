@@ -36,6 +36,7 @@ function renderSettings() {
             }
             return value;
         }
+
         return date.getFullYear() + '/' + addZeros(date.getMonth() + 1, 2) + '/' + addZeros(date.getDate());
     }
 
@@ -88,9 +89,20 @@ function run() {
         type: 'POST',
         url: '/api/code?token=' + token,
         data: JSON.stringify({code: mirror.getValue()}),
-        contentType: 'application/json; charset=utf-8'
+        contentType: 'application/json; charset=utf-8',
+        success: function () {
+            console.log('updated code', arguments);
+
+            $.ajax({
+                type: 'POST',
+                url: '/api/run?type=sim&token=' + token,
+                success: function () {
+                    console.log('started', arguments);
+                    pollData();
+                }
+            });
+        }
     });
-    pollData();
 }
 
 function reset() {
@@ -172,7 +184,6 @@ function addTransaction(transaction) {
         '<td>' + transaction.time + '</td>' +
         '</tr>');
     $trans.prepend($new);
-    console.log(transaction);
 }
 
 function chart(chart, data) {

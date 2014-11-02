@@ -20,7 +20,6 @@ exports.orderExecutor = function (btcOrder, callback) {
 };
 
 exports.prep = function (done) {
-    var since = Date.parse('2014-10-25T13:57:38-07:00');
     var page = 0;
 
     function getNext(callback) {
@@ -29,8 +28,11 @@ exports.prep = function (done) {
             for (var i = 0; i < rawPrices.length; ++i) {
                 var parts = rawPrices[i].split(',');
                 var date = Date.parse(parts[0]);
-                if (date < since) {
+                if (date < exports.fromTime) {
                     return done();
+                }
+                if (date > exports.toTime) {
+                    continue;
                 }
                 var price = parseFloat(parts[1]);
                 prices.push({time: date, price: price});

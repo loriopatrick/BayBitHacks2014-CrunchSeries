@@ -8,37 +8,61 @@ var request = require('request');
 var BOT_SRC = path.join(__dirname, '../bot');
 var BOTS_DEST = path.join(__dirname, '../bots');
 
-var onready = [];
+module.exports = function (attr) {
+    var type = attr.type;
+    var code = attr.code;
+    var accessToken = attr.accessToken;
+    var userId = attr.userId;
+    var port = attr.port;
+    var settings = attr.settings;
+    var usdTransFee = attr.usdTransFee;
 
-module.exports = function (strategy, code, port) {
-    var dest = path.join(BOTS_DEST, code);
-    var self = this;
-
+    var dest = path.join(BOTS_DEST, userId);
     var ready = false;
+    var running = false;
 
-    // copy over base bot
     ncp(BOT_SRC, dest, function (err) {
-        if (err) throw err;
+        if (err) {
+            console.log('copy error', err);
+            throw err;
+        }
 
-        // write the strategy
-        fs.writeFile(path.join(dest, 'strategy.js'), 'var bot = require(\'./bot\');\n' + strategy, function (err) {
-            if (err) throw err;
+        fs.writeFile(path.join(dest, 'strategy.js'), 'var bot = require(\'./bot\');\n' + code, function (err) {
+            if (err) {
+                console.log('write strategy error', err);
+                throw err;
+            }
 
-            // todo: write the settings file for oath
-            // todo: write file to set sim or live
             spawn();
         });
     });
+
+    var command = [
+        path.join(dest + '/index.js'),
+        port,
+        '"' + type + '"',
+        '"' + accessToken + '"',
+        settings.init.usd,
+        settings.init.btc,
+        settings.testRange.from,
+        settings.testRange.to,
+        settings.updateInterval,
+        usdTransFee
+    ].join(' ');
+
+    function spawn() {
+        childProcess.exec('node ' + command);
+        setTimeout(function () {
+            ready = true;
+        }, 1000);
+    }
 
     this.getSnapshots = function (callback) {
         if (!ready) return callback({snapshots: [], running: false, newSnap: -1});
 
         var self = this;
-
-        request.get('http://localhost:' + port +'/snapshots', function (error, response, body) {
-            if (error) {
-                return callback('bad bot');
-            }
+        request.get('http://localhost:' + port + '/snapshots', function (error, response, body) {
+            if (error) return callback('bad bot');
 
             var data = JSON.parse(body);
             callback(data);
@@ -46,19 +70,20 @@ module.exports = function (strategy, code, port) {
             if (!data.running && data.snapshots.length > 0) {
                 self.stop();
             }
+
+            running = true;
         });
     };
-
-    function spawn() {
-        childProcess.spawn('node', [path.join(dest + '/index.js'), port]);
-        setTimeout(function () {
-            ready = true;
-        }, 1000);
-    }
 
     this.stop = function () {
-        request.post('http://localhost:' + port + '/shutdown', function (error) {
+        if (!running) return;
+        request.post('http://localhost:' + port + '/shutdown', function (err) {
         });
         ready = false;
+        running = false;
     };
+
+    this.getPort = function () {
+        return port;
+    }
 };
