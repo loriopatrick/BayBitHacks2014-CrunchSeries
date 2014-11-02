@@ -195,8 +195,8 @@ function updateData(snapshots, index) {
         if (s.data.orderResult) {
             addTransaction({
                 type: s.data.orderResult.btcDelta > 0 ? 'BUY' : 'SELL',
-                price: '$' + s.data.orderResult.realPrice,
-                btc: '฿' + Math.abs(s.data.orderResult.btcDelta),
+                price: '$' + round(s.data.orderResult.realPrice, 3),
+                btc: '฿' + round(Math.abs(s.data.orderResult.btcDelta), 5),
                 time: new Date(s.data.time).toString()
             });
         }
@@ -208,11 +208,17 @@ function updateData(snapshots, index) {
 
     if (snapshots.length) {
         var last = snapshots[snapshots.length - 1];
-        $('#usd-balance').html(last.data.balance.usd);
-        $('#btc-balance').html(last.data.balance.btc);
+        $('#usd-balance').html(round(last.data.balance.usd, 3));
+        $('#btc-balance').html(round(last.data.balance.btc, 5));
+        $('#usd-total-balance').html(round(last.data.balance.usd + last.data.balance.btc * last.data.price, 3));
     }
 
     chart($('#chart'), data);
+}
+
+function round(value, points) {
+    var scale = Math.pow(10, points);
+    return Math.round(value * scale) / scale;
 }
 
 function addTransaction(transaction) {
