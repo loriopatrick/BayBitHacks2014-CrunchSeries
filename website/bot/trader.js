@@ -70,6 +70,10 @@ function renderSettings() {
     $('#from-date').val(formatDate(settings.testRange.from));
     $('#to-date').val(formatDate(settings.testRange.to));
     $('#update-interval').val(settings.updateInterval);
+
+
+    $('#trans-fee').val(settings.usdTransFee);
+    $('#avg-spread').val(settings.usdSpread);
 }
 
 function updateSettings() {
@@ -84,6 +88,9 @@ function updateSettings() {
     settings.testRange.from = extractDate($('#from-date').val());
     settings.testRange.to = extractDate($('#to-date').val());
     settings.updateInterval = parseInt($('#update-interval').val());
+
+    settings.usdTransFee = parseFloat($('#trans-fee').val());
+    settings.usdSpread = parseFloat($('#avg-spread').val());
 
     $.ajax({
         type: 'POST',

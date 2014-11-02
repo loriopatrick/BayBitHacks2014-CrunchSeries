@@ -157,12 +157,31 @@
                         <input id="update-interval" type="text" class="form-control" placeholder="milliseconds"/>
                     </div>
                 </div>
+
+                <h3>Mock Execution</h3>
+
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label for="trans-fee">Transaction Fee (USD)</label>
+                    </div>
+                    <div class="col-sm-8">
+                        <input id="trans-fee" type="text" class="form-control" placeholder="USD"/>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 5px;">
+                    <div class="col-sm-4">
+                        <label for="avg-spread">Average Spread (USD)</label>
+                    </div>
+                    <div class="col-sm-8">
+                        <input id="avg-spread" type="text" class="form-control" placeholder="USD"/>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal" onclick="renderSettings()">Close
                 </button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="updateSettings()">Save
-                    changes
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="updateSettings()">
+                    Save changes
                 </button>
             </div>
         </div>

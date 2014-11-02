@@ -15,11 +15,9 @@ module.exports = function (attr) {
     var userId = attr.userId;
     var port = attr.port;
     var settings = attr.settings;
-    var usdTransFee = attr.usdTransFee;
 
     var dest = path.join(BOTS_DEST, userId);
     var ready = false;
-    var running = false;
 
     var badBot = false;
 
@@ -49,7 +47,8 @@ module.exports = function (attr) {
         settings.testRange.from,
         settings.testRange.to,
         settings.updateInterval,
-        usdTransFee
+        settings.usdTransFee,
+        settings.usdSpread
     ].join(' ');
 
     function spawn() {

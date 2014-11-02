@@ -14,9 +14,10 @@ function newUser() {
                 from: new Date().getTime() - 1000 * 60 * 60 * 24 * 10,
                 to: new Date().getTime()
             },
-            updateInterval: 200
+            updateInterval: 200,
+            usdTransFee: 0.15,
+            usdSpread: 0.5
         },
-        usdTransFee: 0.15,
         code: '\nbot.setInit(function (context) {\n  context.count = 0;\n});\n\nbot.useStat(function (data, stats, context) {\n  stats.price2 = data.price / 2;\n  context.count += 1;\n});\n\nbot.setStrategy(function (data, stats, context) {\n  if (Math.random() < 0.1) {\n    bot.buy(1);\n  } else if (Math.random() < 0.1) {\n    bot.sell(1);\n  }\n});\n'
     };
 }

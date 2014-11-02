@@ -15,6 +15,7 @@ var fromTime = parseInt(process.argv[7]);
 var toTime = parseInt(process.argv[8]);
 var updateInterval = parseInt(process.argv[9]);
 var usdTransFee = parseFloat(process.argv[10]);
+var usdSpread = parseFloat(process.argv[11]);
 
 var backend = require('./backends/' + type);
 backend.toTime = toTime;
@@ -22,6 +23,7 @@ backend.fromTime = Math.min(Math.max(fromTime, toTime - 3600 * 1000 * 24 * 7), t
 backend.updateInterval = updateInterval;
 backend.accessToken = accessToken;
 backend.usdTransFee = usdTransFee;
+backend.usdSpread = usdSpread;
 
 backend.prep(function () {
     bot.setup(backend);

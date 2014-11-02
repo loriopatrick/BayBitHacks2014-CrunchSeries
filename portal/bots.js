@@ -56,8 +56,7 @@ module.exports = function (app) {
             accessToken: user.accessToken,
             userId: userId,
             port: getPort(),
-            settings: user.settings,
-            usdTransFee: user.usdTransFee
+            settings: user.settings
         });
 
         registerBot(userId, bot);
