@@ -21,8 +21,7 @@ exports.orderExecutor = function (btcOrder, callback) {
     };
 
     if (btcOrder < 0 && order.usdDelta < 0) {
-        order.usdDelta = 0;
-        order.btcDelta = 0;
+        callback(null);
     }
 
     callback(order);

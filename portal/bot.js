@@ -52,20 +52,16 @@ module.exports = function (attr) {
     ].join(' ');
 
     function spawn() {
-        console.log('spawn bot', command);
         var process = childProcess.exec('node ' + command);
         process.on('error', function (error) {
-            console.log('bot error', error);
             badBot = error;
         });
 
         process.on('exit', function () {
             ready = true;
-            console.log('bot exit');
         });
 
         process.stdout.on('data', function () {
-            console.log('bot spawned');
             ready = true;
         });
     }

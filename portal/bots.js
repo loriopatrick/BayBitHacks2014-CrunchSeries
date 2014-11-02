@@ -1,8 +1,9 @@
+var settings = require('./settings');
 var database = require('./database');
 var Bot = require('./bot');
 
 var bots = {};
-var portRange = [3000, 5000];
+var portRange = settings.BOT_PORT_RATE;
 var currentPort = portRange[0];
 var activePorts = {};
 

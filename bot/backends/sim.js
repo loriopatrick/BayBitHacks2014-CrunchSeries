@@ -42,7 +42,7 @@ exports.orderExecutor = function (btcOrder, callback) {
                 btcDelta: btcOrder,
                 estimatedPrice: currentPrice,
                 realPrice: usd / btcOrder
-            })
+            });
         });
     }
 

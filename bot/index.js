@@ -46,7 +46,7 @@ backend.prep(function () {
         }
 
         stats._pricePerformance = data.price / firstPrice;
-        stats._balancePerformance = (data.balance.usd + data.balance.btc * data.price) / firstBalance;
+        stats._balancePerformance = (data.balance.usd + data.balance.btc * (data.price - usdSpread)) / firstBalance;
     });
 
     require('./strategy');

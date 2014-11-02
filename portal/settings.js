@@ -6,3 +6,7 @@ exports.COIN_BASE = {
 exports.MONGO_PATH = 'mongodb://127.0.0.1:27017/test';
 
 exports.BASE_URL = 'https://localhost:5050';
+
+exports.PUBLIC_PORT = 5050;
+
+exports.BOT_PORT_RATE = [3000, 5000];

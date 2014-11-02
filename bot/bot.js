@@ -40,13 +40,11 @@ exports.setInit = function (fn) {
 exports.buy = function (quantity) {
     if (!quantity) return;
     currentBtcOrder = Math.min(currentBtcOrder + quantity, usd / currentPrice.price);
-//    console.log(quantity, currentBtcOrder, usd, currentPrice);
 };
 
 exports.sell = function (quantity) {
     if (!quantity) return;
     currentBtcOrder = Math.max(currentBtcOrder - quantity, -btc);
-//    console.log(quantity, currentBtcOrder, usd, currentPrice);
 };
 
 exports.isRunning = function () {
