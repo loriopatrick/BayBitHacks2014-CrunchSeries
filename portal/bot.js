@@ -10,12 +10,11 @@ var BOTS_DEST = path.join(__dirname, '../bots');
 
 var onready = [];
 
-module.exports = function (strategy, code) {
+module.exports = function (strategy, code, port) {
     var dest = path.join(BOTS_DEST, code);
     var self = this;
 
     var ready = false;
-    var running = false;
 
     // copy over base bot
     ncp(BOT_SRC, dest, function (err) {
@@ -27,25 +26,21 @@ module.exports = function (strategy, code) {
 
             // todo: write the settings file for oath
             // todo: write file to set sim or live
-            ready = true;
-            while (onready.length) {
-                onready.pop()();
-            }
+            spawn();
         });
     });
 
     this.getSnapshots = function (callback) {
-        if (!ready || !running) return callback({snapshots: [], running: false, newSnap: -1});
+        if (!ready) return callback({snapshots: [], running: false, newSnap: -1});
 
         var self = this;
 
-        request.get('http://localhost:3000/snapshots', function (error, response, body) {
+        request.get('http://localhost:' + port +'/snapshots', function (error, response, body) {
             if (error) {
                 return callback('bad bot');
             }
 
             var data = JSON.parse(body);
-
             callback(data);
 
             if (!data.running && data.snapshots.length > 0) {
@@ -54,21 +49,16 @@ module.exports = function (strategy, code) {
         });
     };
 
-    this.start = function () {
-        if (!ready) {
-            var self = this;
-            return onready.push(function () {
-                self.start();
-            });
-        }
-
-        childProcess.spawn('node', [path.join(dest + '/index.js')]);
-        running = true;
-    };
+    function spawn() {
+        childProcess.spawn('node', [path.join(dest + '/index.js'), port]);
+        setTimeout(function () {
+            ready = true;
+        }, 1000);
+    }
 
     this.stop = function () {
-        request.post('http://localhost:3000/shutdown');
-        running = false;
+        request.post('http://localhost:' + port + '/shutdown', function (error) {
+        });
         ready = false;
     };
 };

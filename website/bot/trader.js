@@ -1,7 +1,10 @@
 var code = window.location.href.split('code=')[1];
 
 var mirror = null;
-var data = [[],[]];
+var data = [
+    [],
+    []
+];
 var lastTime = 0;
 
 $(function () {
@@ -12,11 +15,20 @@ $(function () {
             viewportMargin: Infinity,
             lineWrapping: true
         });
-    });
 
-    reset();
-    pollData(); // tie into any current running bots
+        reset();
+        pollData(); // tie into any current running bots
+    });
 });
+
+function simulate() {
+}
+
+function backTest() {
+}
+
+function liveTrade() {
+}
 
 function run() {
     reset();
@@ -25,12 +37,16 @@ function run() {
 }
 
 function reset() {
-    data = [[],[]];
+    data = [
+        [],
+        []
+    ];
     lastTime = 0;
     $('#trans').empty();
     chart($('#chart'), data);
     $('#usd-balance').html('');
     $('#btc-balance').html('');
+    $('.left').addClass('inactive');
 }
 
 function pollData() {
@@ -60,6 +76,8 @@ function pollData() {
 
 function updateData(snapshots, index) {
     if (index == -1) return;
+
+    $('.left').removeClass('inactive');
 
     for (var i = index; i < snapshots.length; ++i) {
         var s = snapshots[i];
@@ -101,6 +119,7 @@ function addTransaction(transaction) {
 }
 
 function chart(chart, data) {
+    if (!chart || !chart.length || !data) return;
     $.plot(chart, data, {
         series: {
             lines: { show: true, fill: false},

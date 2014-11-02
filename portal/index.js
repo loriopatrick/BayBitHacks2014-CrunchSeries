@@ -37,9 +37,9 @@ app.post('/api/run-bot', function (req, res) {
         bots[req.user.code] = null;
     }
 
-    var bot = bots[req.user.code] = new Bot(code, req.user.code);
-    bot.start();
+    // todo: update bot code
 
+    var bot = bots[req.user.code] = new Bot(code, req.user.code, 3000);
     res.send('bot started');
 });
 
@@ -71,4 +71,4 @@ app.get('/api/get-code', function (req, res) {
     res.send('\nbot.setInit(function (context) {\n  context.count = 0;\n});\n\nbot.useStat(function (data, stats, context) {\n  stats.price2 = data.price / 2;\n  context.count += 1;\n});\n\nbot.setStrategy(function (data, stats, context) {\n  if (Math.random() < 0.1) {\n    bot.buy(1);\n  } else if (Math.random() < 0.1) {\n    bot.sell(1);\n  }\n});\n');
 });
 
-app.listen(5050);
+app.listen(parseInt(5050));
