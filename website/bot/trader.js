@@ -6,6 +6,7 @@ var data = [
     [],
     []
 ];
+var statistics = {};
 
 var currentType = null;
 var typeMessages = {
@@ -16,6 +17,21 @@ var typeMessages = {
 
 var lastTime = 0;
 var isRunning = false;
+
+function reset() {
+    data = [
+        {data:[], label: 'Market', color: 'rgb(143, 198, 242)'},
+        {data:[], label: 'Bot', color: 'rgb(242, 198, 143)'}
+    ];
+    lastTime = 0;
+    $('#trans').empty();
+    chart($('#performance'), data);
+    $('#usd-balance').html('');
+    $('#btc-balance').html('');
+    $('.left').addClass('inactive');
+    statistics = {};
+    $('#statistics').empty();
+}
 
 $(function () {
     $.get('/api/account?token=' + token, function (account) {
@@ -122,19 +138,6 @@ function run(type) {
     });
 }
 
-function reset() {
-    data = [
-        {data:[], label: 'Market', color: 'rgb(143, 198, 242)'},
-        {data:[], label: 'Bot', color: 'rgb(242, 198, 143)'}
-    ];
-    lastTime = 0;
-    $('#trans').empty();
-    chart($('#chart'), data);
-    $('#usd-balance').html('');
-    $('#btc-balance').html('');
-    $('.left').addClass('inactive');
-}
-
 function renderRunningControls() {
     $('.header').addClass('running');
 }
@@ -168,12 +171,8 @@ function pollData() {
                 return clearInterval(interval);
             }
 
-            if (!data.running && isRunning) {
-                clearInterval(interval);
-            }
-
             currentType = data.type;
-            setRunning(data.running);
+            setRunning(true);
 
             if (data.snapshots.length > currentIndex) {
                 updateData(data.snapshots, currentIndex);
@@ -188,9 +187,13 @@ function updateData(snapshots, index) {
 
     $('.left').removeClass('inactive');
 
+    var newData = false;
+
     for (var i = index; i < snapshots.length; ++i) {
         var s = snapshots[i];
+
         if (s.data.time < lastTime) continue;
+        lastTime = s.data.time;
 
         if (s.data.orderResult) {
             addTransaction({
@@ -201,9 +204,34 @@ function updateData(snapshots, index) {
             });
         }
 
-        lastTime = s.data.time;
-        data[0].data.push([s.data.time, s.stats.pricePerformance]);
-        data[1].data.push([s.data.time, s.stats.balancePerformance]);
+        newData = true;
+
+        data[0].data.push([s.data.time, s.stats._pricePerformance]);
+        data[1].data.push([s.data.time, s.stats._balancePerformance]);
+
+        for (var stat in s.stats) {
+            if (stat.indexOf('_') == 0) {
+                continue;
+            }
+
+            var value = s.stats[stat];
+            if (value != parseFloat(value)) continue;
+
+            if (!(stat in statistics)) {
+                var el = document.createElement('div');
+                el.id = 'chart-' + Math.random();
+                el.className = 'chart';
+
+                var ss = statistics[stat] = {
+                    series: {data: [], label: stat},
+                    $element: $(el)
+                };
+
+                ss.$element.appendTo($('#statistics'));
+            }
+
+            statistics[stat].series.data.push([s.data.time, value]);
+        }
     }
 
     if (snapshots.length) {
@@ -213,7 +241,16 @@ function updateData(snapshots, index) {
         $('#usd-total-balance').html(round(last.data.balance.usd + last.data.balance.btc * last.data.price, 3));
     }
 
-    chart($('#chart'), data);
+    if (newData) {
+        chart($('#performance'), data);
+
+        for (var stat in statistics) {
+            var statData = statistics[stat];
+//            setTimeout(function () {
+                chart(statData.$element, [statData.series]);
+//            }, 0);
+        }
+    }
 }
 
 function round(value, points) {

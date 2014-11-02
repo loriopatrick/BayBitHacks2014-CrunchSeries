@@ -34,8 +34,8 @@ backend.prep(function () {
             firstBalance = data.balance.usd + data.balance.btc * data.price;
         }
 
-        stats.pricePerformance = data.price / firstPrice;
-        stats.balancePerformance = (data.balance.usd + data.balance.btc * data.price) / firstBalance;
+        stats._pricePerformance = data.price / firstPrice;
+        stats._balancePerformance = (data.balance.usd + data.balance.btc * data.price) / firstBalance;
     });
 
     require('./strategy');
@@ -56,7 +56,13 @@ function clone(a) {
 }
 
 app.get('/snapshots', function (req, res) {
-    res.send({snapshots: snapshots, running: bot.isRunning(), type: type});
+    res.send({snapshots: snapshots, type: type});
+
+    if (!bot.isRunning() && snapshots.length) {
+        setTimeout(function () {
+            process.exit();
+        }, 1000);
+    }
 });
 
 app.post('/stop', function (req, res) {

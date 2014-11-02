@@ -60,6 +60,10 @@ module.exports = function (attr) {
             badBot = error;
         });
 
+        process.on('exit', function () {
+            console.log('bot exit');
+        });
+
         process.stdout.on('data', function () {
             console.log('bot spawned');
             ready = true;
@@ -67,32 +71,33 @@ module.exports = function (attr) {
     }
 
     this.getSnapshots = function (callback) {
-        if (!ready) return callback({snapshots: [], running: false, newSnap: -1});
+        if (badBot) {
+            return callback('bad bot');
+        }
 
-        var self = this;
+        if (!ready) {
+            return callback({snapshots: [], type: type});
+        }
+
         request.get('http://localhost:' + port + '/snapshots', function (error, response, body) {
             if (error) {
-                console.log('bad bot', badBot);
-                return callback('bad bot');
+                return callback('no bot');
             }
 
-            var data = JSON.parse(body);
+            var data = null;
+            try {
+                data = JSON.parse(body);
+            } catch (e) {
+                return callback('no bot');
+            }
+
             callback(data);
-
-            if (!data.running && data.snapshots.length > 0) {
-                self.stop();
-            }
-
-            running = true;
         });
     };
 
     this.stop = function () {
-        if (!running) return;
         request.post('http://localhost:' + port + '/shutdown', function (err) {
         });
-        ready = false;
-        running = false;
     };
 
     this.getPort = function () {
