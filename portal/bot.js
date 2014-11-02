@@ -60,6 +60,7 @@ module.exports = function (attr) {
         });
 
         process.on('exit', function () {
+            ready = true;
             console.log('bot exit');
         });
 

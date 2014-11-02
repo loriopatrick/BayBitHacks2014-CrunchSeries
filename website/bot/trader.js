@@ -2,10 +2,8 @@ var token = window.location.href.split('token=')[1];
 
 var mirror = null;
 var settings = null;
-var data = [
-    [],
-    []
-];
+var data = null;
+var transactionMarks = [];
 var statistics = {};
 
 var currentType = null;
@@ -20,9 +18,10 @@ var isRunning = false;
 
 function reset() {
     data = [
-        {data: [], label: 'Market', color: 'rgb(143, 198, 242)'},
-        {data: [], label: 'Bot', color: 'rgb(242, 198, 143)'}
+        {data: [], label: 'Market', color: 'rgb(242, 198, 143)'},
+        {data: [], label: 'Bot', color: 'rgb(198, 242, 143)'}
     ];
+    transactionMarks = [];
     lastTime = 0;
     $('#trans').empty();
     chart($('#performance'), data);
@@ -222,6 +221,12 @@ function updateData(snapshots, index) {
                 btc: '฿' + round(Math.abs(s.data.orderResult.btcDelta), 5),
                 time: new Date(s.data.time).toString()
             });
+
+            transactionMarks.push({
+                color: s.data.orderResult.btcDelta > 0 ? '#DEFBFF' : '#FFDEDE',
+                lineWidth: 1,
+                xaxis: { from: s.data.time, to: s.data.time }
+            });
         }
 
         newData = true;
@@ -316,6 +321,9 @@ function chart(chart, data) {
         series: {
             lines: { show: true, fill: false},
             points: { show: false}
+        },
+        grid: {
+            markings: transactionMarks
         },
         xaxis: {
             color: 'rgba(0, 0, 0, 0.5)',
