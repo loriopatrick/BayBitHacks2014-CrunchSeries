@@ -16,6 +16,10 @@ var init = null;
 
 var currentPrice = 0;
 
+exports.addSettingsToContext = function (settings) {
+    context.settings = settings;
+};
+
 exports.setup = function (backend) {
     priceSource = backend.priceSource;
     orderExecutor = backend.orderExecutor;

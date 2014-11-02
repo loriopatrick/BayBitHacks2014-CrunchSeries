@@ -18,12 +18,21 @@ var usdTransFee = parseFloat(process.argv[10]);
 var usdSpread = parseFloat(process.argv[11]);
 
 var backend = require('./backends/' + type);
+
 backend.toTime = toTime;
 backend.fromTime = Math.min(Math.max(fromTime, toTime - 3600 * 1000 * 24 * 7), toTime - 3600 * 1000 * 24);
 backend.updateInterval = updateInterval;
 backend.accessToken = accessToken;
 backend.usdTransFee = usdTransFee;
 backend.usdSpread = usdSpread;
+
+bot.addSettingsToContext({
+    updateInterval: updateInterval,
+    usdTransFee: usdTransFee,
+    usdSpread: usdSpread,
+    initUsd: initUsd,
+    initBtc: initBtc
+});
 
 backend.prep(function () {
     bot.setup(backend);
