@@ -81,7 +81,7 @@ module.exports = function (attr) {
 
         request.get('http://localhost:' + port + '/snapshots', function (error, response, body) {
             if (error) {
-                return callback('no bot');
+                return callback(badBot ? 'bad bot' : 'no bot');
             }
 
             var data = null;

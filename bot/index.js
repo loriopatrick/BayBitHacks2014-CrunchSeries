@@ -66,17 +66,19 @@ function clone(a) {
     return JSON.parse(JSON.stringify(a));
 }
 
-var exitNext = false;
+var exitCount = 0;
 
 app.get('/snapshots', function (req, res) {
     res.send({snapshots: snapshots, type: type});
 
-    if (exitNext) {
+    if (exitCount > 2) {
         process.exit();
     }
 
     if (!bot.isRunning() && snapshots.length) {
-        exitNext = true;
+        exitCount += 1;
+    } else {
+        exitCount = 0;
     }
 });
 

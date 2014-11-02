@@ -28,17 +28,41 @@ exports.orderExecutor = function (btcOrder, callback) {
     callback(order);
 };
 
+var fs = require('fs');
+var path = require('path');
+
 exports.prep = function (done) {
     var page = 0;
 
+    var cacheFile = path.join(__dirname, '../prices-' + exports.fromTime + '-' + exports.toTime + '.json');
+    fs.exists(cacheFile, function (exists) {
+        if (exists) {
+            return fs.readFile(cacheFile, function (err, file) {
+                if (err) throw err;
+                prices = JSON.parse(file);
+                done();
+            });
+        }
+
+        getNext(next);
+    });
+
+    function finish() {
+        fs.writeFile(cacheFile, JSON.stringify(prices), function () {
+        });
+        done();
+    }
+
     function getNext(callback) {
-        cacheRequest('https://api.coinbase.com/v1/prices/historical?page=' + page, function (error, response, body) {
+        request.get('https://api.coinbase.com/v1/prices/historical?page=' + page, function (err, response, body) {
+            if (err) throw err;
+
             var rawPrices = body.split('\n');
             for (var i = 0; i < rawPrices.length; ++i) {
                 var parts = rawPrices[i].split(',');
                 var date = Date.parse(parts[0]);
                 if (date < exports.fromTime) {
-                    return done();
+                    return finish();
                 }
                 if (date > exports.toTime) {
                     continue;
@@ -54,12 +78,5 @@ exports.prep = function (done) {
         page += 1;
         getNext(next);
     }
-
-    getNext(next);
 };
 
-var fs = require('fs');
-
-function cacheRequest(url, callback) {
-    request(url, callback);
-}
