@@ -20,8 +20,8 @@ var isRunning = false;
 
 function reset() {
     data = [
-        {data:[], label: 'Market', color: 'rgb(143, 198, 242)'},
-        {data:[], label: 'Bot', color: 'rgb(242, 198, 143)'}
+        {data: [], label: 'Market', color: 'rgb(143, 198, 242)'},
+        {data: [], label: 'Bot', color: 'rgb(242, 198, 143)'}
     ];
     lastTime = 0;
     $('#trans').empty();
@@ -246,9 +246,7 @@ function updateData(snapshots, index) {
 
         for (var stat in statistics) {
             var statData = statistics[stat];
-//            setTimeout(function () {
-                chart(statData.$element, [statData.series]);
-//            }, 0);
+            chart(statData.$element, [statData.series]);
         }
     }
 }

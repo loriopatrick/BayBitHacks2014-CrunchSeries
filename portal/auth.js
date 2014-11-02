@@ -3,7 +3,7 @@ var rand = require("generate-key");
 var settings = require('./settings');
 var database = require('./database');
 
-var redirectURI = 'https://localhost:5050/auth';
+var redirectURI = settings.BASE_URL + '/auth';
 
 function newUser() {
     return {

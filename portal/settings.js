@@ -4,3 +4,5 @@ exports.COIN_BASE = {
 };
 
 exports.MONGO_PATH = 'mongodb://127.0.0.1:27017/test';
+
+exports.BASE_URL = 'https://localhost:5050';
