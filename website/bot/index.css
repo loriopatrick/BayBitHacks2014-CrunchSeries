@@ -51,12 +51,28 @@
     float: left;
 }
 
-.task-bar {
+.header .task-bar {
+    display: block;
+}
+
+.header.running .task-bar {
+    display: none;
+}
+
+.header .task-bar-running {
+    display: none;
+}
+
+.header.running .task-bar-running {
+    display: block;
+}
+
+.task-bar, .task-bar-running {
     float: right;
     padding-right: 50px;
 }
 
-.task-bar a {
+.task-bar a, .task-bar-running a, .task-bar-running .msg {
     text-decoration: none;
     color: white;
     padding: 5px;
@@ -66,7 +82,7 @@
     overflow: hidden;
 }
 
-.task-bar a:hover {
+.task-bar a:hover, .task-bar-running a:hover {
     background: #4d4d4d;
     color: #ffffff;
 }

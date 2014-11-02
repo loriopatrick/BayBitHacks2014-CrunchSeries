@@ -7,7 +7,15 @@ var data = [
     []
 ];
 
+var currentType = null;
+var typeMessages = {
+    'back': '<span class="glyphicon glyphicon-eye-open"></span> Back Test',
+    'sim': '<span class="glyphicon glyphicon-flash"></span> Simulation',
+    'live': '<span class="glyphicon glyphicon-usd"></span> Live'
+};
+
 var lastTime = 0;
+var isRunning = false;
 
 $(function () {
     $.get('/api/account?token=' + token, function (account) {
@@ -74,15 +82,25 @@ function openSettings() {
 }
 
 function simulate() {
+    if (isRunning) return alert('Only one bot a time');
+    run('sim');
 }
 
 function backTest() {
+    if (isRunning) return alert('Only one bot a time');
+    run('back');
 }
 
 function liveTrade() {
+    if (isRunning) return alert('Only one bot a time');
+    alert('not yet implemented');
 }
 
-function run() {
+function stop() {
+    $.post('/api/bot/stop?token=' + token);
+}
+
+function run(type) {
     reset();
     $.ajax({
         type: 'POST',
@@ -94,7 +112,7 @@ function run() {
 
             $.ajax({
                 type: 'POST',
-                url: '/api/run?type=sim&token=' + token,
+                url: '/api/run?type=' + type + '&token=' + token,
                 success: function () {
                     console.log('started', arguments);
                     pollData();
@@ -117,26 +135,49 @@ function reset() {
     $('.left').addClass('inactive');
 }
 
+function renderRunningControls() {
+    $('.header').addClass('running');
+}
+
+function renderNonRunningControls() {
+    $('.header').removeClass('running');
+    $('#running-type').html(typeMessages[currentType]);
+}
+
+function setRunning(running) {
+    if (!isRunning && running) {
+        renderRunningControls();
+    } else if (isRunning && !running) {
+        renderNonRunningControls();
+    }
+    isRunning = running;
+}
+
 function pollData() {
     var currentIndex = 0;
     var interval = setInterval(function () {
         $.get('/api/bot/snapshots?token=' + token, function (data) {
             if (data === 'no bot') {
+                setRunning(false);
                 return clearInterval(interval);
             }
 
             if (data === 'bad bot') {
+                setRunning(false);
                 alert('There is an error in your bot');
                 return clearInterval(interval);
             }
 
+            if (!data.running && isRunning) {
+                clearInterval(interval);
+            }
+
+            currentType = data.type;
+            setRunning(data.running);
+
             if (data.snapshots.length > currentIndex) {
                 updateData(data.snapshots, currentIndex);
                 currentIndex = data.snapshots.length;
-            }
-
-            if (!data.running && data.snapshots.length) {
-                clearInterval(interval);
             }
         });
     }, 500);

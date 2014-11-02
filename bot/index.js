@@ -56,7 +56,7 @@ function clone(a) {
 }
 
 app.get('/snapshots', function (req, res) {
-    res.send({snapshots: snapshots, running: bot.isRunning()});
+    res.send({snapshots: snapshots, running: bot.isRunning(), type: type});
 });
 
 app.post('/stop', function (req, res) {

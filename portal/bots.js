@@ -23,7 +23,7 @@ function getId(user) {
 function destroyBot(id) {
     bots[id].stop();
     activePorts[bots[id].getPort()] = false;
-    bots[id] = null;
+    delete bots[id];
 }
 
 function registerBot(id, bot) {
@@ -81,8 +81,8 @@ module.exports = function (app) {
         });
     });
 
-    app.post('/api/bot/shutdown', function (req, res) {
-        req.bot.stop();
+    app.post('/api/bot/stop', function (req, res) {
+        destroyBot(getId(req.user));
         res.send('shutting down');
     });
 };

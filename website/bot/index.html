@@ -27,6 +27,14 @@
         <a href="#" onclick="simulate()"><span class="glyphicon glyphicon-flash"></span> Simulate</a>
         <a href="#" onclick="liveTrade()"><span class="glyphicon glyphicon-usd"></span> Live Trade</a>
     </div>
+
+    <div class="task-bar-running">
+        <a href="#" onclick="stop()"><span class="glyphicon glyphicon-remove"></span> Stop</a>
+        <span class="msg">
+            Running
+            <span id="running-type"><span class="glyphicon glyphicon-flash"></span> Simulation</span>
+        </span>
+    </div>
 </div>
 <div class="left">
     <div class="content">
@@ -149,7 +157,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="renderSettings()">Close</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="renderSettings()">Close
+                </button>
                 <button type="button" class="btn btn-primary" onclick="updateSettings()">Save changes</button>
             </div>
         </div>
