@@ -169,6 +169,10 @@ function setRunning(running) {
         renderNonRunningControls();
     }
     isRunning = running;
+
+    if (!running) {
+        renderNoLoad();
+    }
 }
 
 function pollData() {

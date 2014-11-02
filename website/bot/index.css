@@ -46,9 +46,10 @@
 .logo {
     font-weight: bold;
     color: white;
-    padding: 5px;
+    padding: 0 5px;
     display: block;
     float: left;
+    font-size: 19px;
 }
 
 .header .task-bar {
