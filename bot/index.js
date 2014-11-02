@@ -1,6 +1,7 @@
+var process = require('process');
+var express = require('express');
 var backend = require('./sim');
 
-var express = require('express');
 var app = express();
 
 var snapshots = [];
@@ -39,5 +40,11 @@ app.post('/stop', function (req, res) {
     bot.stop();
     res.send({msg: 'stopping bot'});
 });
+
+app.post('/shutdown', function (req, res) {
+    res.send({msg: 'shutting down'});
+    process.exit();
+});
+
 
 app.listen(3000);

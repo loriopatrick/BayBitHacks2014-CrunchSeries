@@ -1,0 +1,24 @@
+#chart {
+    width: 90%;
+    height: 200px;
+}
+
+.left {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    bottom: 0;
+}
+
+.right {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50%;
+    bottom: 0;
+}
+
+.content {
+    padding: 10px;
+}

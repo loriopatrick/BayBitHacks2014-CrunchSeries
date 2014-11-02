@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html ng-app="bot">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="lib/jquery/dist/jquery.min.js"></script>
+    <script src="lib/flot/jquery.flot.js"></script>
+    <script src="lib/codemirror/lib/codemirror.js"></script>
+    <script src="lib/codemirror/mode/javascript/javascript.js"></script>
+    <script src="bot.js"></script>
+
+    <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="lib/codemirror/lib/codemirror.css"/>
+    <link rel="stylesheet" href="lib/codemirror/theme/base16-dark.css"/>
+
+    <link rel="stylesheet" href="index.css"/>
+
+    <script>
+
+    </script>
+</head>
+<body>
+<div class="left">
+    <div class="content">
+        <div class="row">
+            <div class="col-sm-12">
+                <h2>Status</h2>
+
+                <div id="chart"></div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <h2>Transactions</h2>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Price</th>
+                        <th>BTC</th>
+                        <th>Time</th>
+                    </tr>
+                    </thead>
+                    <tr>
+                        <td>BUY</td>
+                        <td>$325.0</td>
+                        <td>¢1</td>
+                        <td>11/1/14 - 3:12pm</td>
+                    </tr>
+
+                    <tr>
+                        <td>BUY</td>
+                        <td>$325.0</td>
+                        <td>¢1</td>
+                        <td>11/1/14 - 3:12pm</td>
+                    </tr>
+
+                    <tr>
+                        <td>BUY</td>
+                        <td>$325.0</td>
+                        <td>¢1</td>
+                        <td>11/1/14 - 3:12pm</td>
+                    </tr>
+                    <tr>
+                        <td>BUY</td>
+                        <td>$325.0</td>
+                        <td>¢1</td>
+                        <td>11/1/14 - 3:12pm</td>
+                    </tr>
+                    <tr>
+                        <td>BUY</td>
+                        <td>$325.0</td>
+                        <td>¢1</td>
+                        <td>11/1/14 - 3:12pm</td>
+                    </tr>
+                    <tr>
+                        <td>BUY</td>
+                        <td>$325.0</td>
+                        <td>¢1</td>
+                        <td>11/1/14 - 3:12pm</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="right">
+    <div class="content">
+        <a href="#" onclick="run()">Run</a>
+        <div id="code"></div>
+    </div>
+</div>
+</body>
+</html>

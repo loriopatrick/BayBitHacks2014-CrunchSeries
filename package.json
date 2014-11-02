@@ -1,0 +1,21 @@
+{
+  "name": "HackCrunchSeries",
+  "version": "0.0.0",
+  "description": "Build an online trading bot",
+  "main": "portal/index.js",
+  "dependencies": {
+    "express": "~4.10.1",
+    "request": "~2.47.0",
+    "generate-key": "0.0.6",
+    "mongodb": "^1.4.19",
+    "body-parser": "^1.9.2",
+    "ncp": "^1.0.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "PRIVATE",
+  "private": true
+}
