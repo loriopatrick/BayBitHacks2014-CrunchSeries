@@ -61,7 +61,7 @@ function renderSettings() {
             return value;
         }
 
-        return date.getFullYear() + '/' + addZeros(date.getMonth() + 1, 2) + '/' + addZeros(date.getDate());
+        return date.getFullYear() + '/' + addZeros(date.getMonth() + 1, 2) + '/' + addZeros(date.getDate(), 2);
     }
 
     $('#start-usd').val(settings.init.usd);
