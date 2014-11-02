@@ -123,6 +123,7 @@ function stop() {
 }
 
 function run(type) {
+    currentType = type;
     reset();
     renderLoad();
     $.ajax({
@@ -286,7 +287,8 @@ function updateData(snapshots, index) {
         var last = snapshots[snapshots.length - 1];
         $('#usd-balance').html(round(last.data.balance.usd, 3));
         $('#btc-balance').html(round(last.data.balance.btc, 5));
-        $('#usd-total-balance').html(round(last.data.balance.usd + last.data.balance.btc * last.data.price, 3));
+        $('#usd-total-balance').html(round(last.data.balance.usd
+            + last.data.balance.btc * (last.data.price - settings.usdSpread), 3));
     }
 
     if (newData) {

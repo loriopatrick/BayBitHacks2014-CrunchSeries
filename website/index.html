@@ -3,99 +3,74 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title></title>
-    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="bot/lib/bootstrap/dist/css/bootstrap.min.css"/>
 
     <style>
         body {
             font-family: Tahoma, serif;
-
+            background: #2d62ae;
         }
-
-        .background, .background .top, .background .bottom, .foreground {
-            position: absolute;
-            z-index: 1;
-            left: 0;
-            right: 0;
-        }
-
-        .background {
-            z-index: 1;
-            top: 0;
-            bottom: 0;
-            background-image: url("img/grid9.png");
-            opacity: 0.1;
-        }
-
-        .background .top {
-            z-index: 2;
-            top: 0;
-            bottom: 50%;
-            background: url("http://www.bloomberg.com/quicktake/content/uploads/sites/2/2013/09/bitcoin11.jpg") center;
-            background-size: cover;
-            opacity: 0.8;
-        }
-
-        .background .bottom {
-            z-index: 2;
-            bottom: 0;
-            top: 50%;
-            background: url("http://singaporestockstrading.com/wp-content/uploads/2014/02/stock-chart-blue.png") center;
-            background-size: cover;
-            opacity: 0.8;
-        }
-
         .foreground {
             position: absolute;
             left: 50%;
             width: 1px;
-            top: 50%;
+            top: 60%;
             height: 1px;
             z-index: 5;
         }
 
         .startBtn {
             font-size: 24px;
-            /*font-weight: bold;*/
+            font-weight: bold;
             display: block;
             position: relative;
             top: -25px;
             left: -100px;
-            height: 30px;
+            height: 50px;
             width: 200px;
             padding: 10px;
-            background: black;
+            background: #ffffff;
             text-align: center;
+            border-radius: 5px;;
         }
 
         a.startBtn {
             text-decoration: none;
-            color: #fbfbfb;
+            color: #2d62ae;
         }
 
         a.startBtn:hover {
-            color: #d2d2d2;
+            color: black;
         }
 
         .logo {
             display: block;
             position: absolute;
-            top: 30px;
-            left: 30px;
+            top: 30%;
+            left: 50%;
             z-index: 10;
-            font-size: 30px;
+            font-size: 64px;
             font-weight: bold;
-            /*opacity: 0.5;*/
+            color: white;
+        }
+
+        .logo > .body {
+            position: absolute;
+            width: 600px;
+            left: -300px;
+            text-align: center;
         }
     </style>
 </head>
 <body>
 <div class="background">
-    <div class="top"></div>
-    <div class="bottom"></div>
 </div>
-<!--<div class="logo">-->
-<!--<span style="background: rgba(0, 133, 255, 0.56); padding: 5px;">Crunch</span><span style="padding: 5px;">Series</span>-->
-<!--</div>-->
+<div class="logo">
+    <div class="body">
+        <span class="glyphicon glyphicon-stats"></span>
+        Crunch Series
+    </div>
+</div>
 <div class="foreground">
     <a href="/login" class="startBtn">Start Trading</a>
 </div>

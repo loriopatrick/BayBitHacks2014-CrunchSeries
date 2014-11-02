@@ -36,6 +36,9 @@ exports.orderExecutor = function (btcOrder, callback) {
 
             var data = JSON.parse(body);
             var usd = parseFloat(data['subtotal']['amount']);
+            if (usd < 0.001) {
+                return callback(null);
+            }
 
             callback({
                 usdDelta: -usd,
@@ -59,7 +62,7 @@ exports.orderExecutor = function (btcOrder, callback) {
             btcDelta: -btcOrder,
             estimatedPrice: currentPrice,
             realPrice: usd / btcOrder
-        })
+        });
     });
 };
 
