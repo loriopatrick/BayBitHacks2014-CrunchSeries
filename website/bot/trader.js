@@ -215,22 +215,45 @@ function updateData(snapshots, index) {
             }
 
             var value = s.stats[stat];
-            if (value != parseFloat(value)) continue;
+            if (typeof(value) !== 'object' && (typeof(value) !== 'number')) {
+                continue;
+            }
 
             if (!(stat in statistics)) {
                 var el = document.createElement('div');
                 el.id = 'chart-' + Math.random();
                 el.className = 'chart';
 
-                var ss = statistics[stat] = {
-                    series: {data: [], label: stat},
+                var ss = {
+                    seriesKey: {},
+                    series: [],
                     $element: $(el)
                 };
 
+                if (typeof(value) === 'object') {
+                    for (var statKey in value) {
+                        if (typeof(value[statKey]) !== 'number') continue;
+                        ss.seriesKey[statKey] = ss.series.length;
+                        ss.series.push({data:[], label: stat + '.' + statKey});
+                    }
+                } else {
+                    ss.series = [{data:[], label: stat}];
+                }
+
+                statistics[stat] = ss;
                 ss.$element.appendTo($('#statistics'));
             }
 
-            statistics[stat].series.data.push([s.data.time, value]);
+            if (typeof(value) === 'object') {
+                for (var statKey in value) {
+                    statistics[stat].series[statistics[stat].seriesKey[statKey]].data.push([
+                        s.data.time,
+                        value[statKey]
+                    ]);
+                }
+            } else {
+                statistics[stat].series[0].data.push([s.data.time, value]);
+            }
         }
     }
 
@@ -246,7 +269,7 @@ function updateData(snapshots, index) {
 
         for (var stat in statistics) {
             var statData = statistics[stat];
-            chart(statData.$element, [statData.series]);
+            chart(statData.$element, statData.series);
         }
     }
 }
