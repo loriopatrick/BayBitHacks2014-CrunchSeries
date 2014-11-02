@@ -155,11 +155,11 @@ function renderNoLoad() {
 
 function renderRunningControls() {
     $('.header').addClass('running');
+    $('#running-type').html(typeMessages[currentType]);
 }
 
 function renderNonRunningControls() {
     $('.header').removeClass('running');
-    $('#running-type').html(typeMessages[currentType]);
 }
 
 function setRunning(running) {
