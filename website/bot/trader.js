@@ -1,13 +1,13 @@
 var token = window.location.href.split('token=')[1];
 
 var mirror = null;
+var settings = null;
 var data = [
     [],
     []
 ];
-var lastTime = 0;
 
-var settings = null;
+var lastTime = 0;
 
 $(function () {
     $.get('/api/account?token=' + token, function (account) {
@@ -60,7 +60,6 @@ function updateSettings() {
     settings.testRange.from = extractDate($('#from-date').val());
     settings.testRange.to = extractDate($('#to-date').val());
     settings.updateInterval = parseInt($('#update-interval').val());
-
 
     $.ajax({
         type: 'POST',
@@ -119,7 +118,7 @@ function reset() {
 }
 
 function pollData() {
-    var currentIndex = -1;
+    var currentIndex = 0;
     var interval = setInterval(function () {
         $.get('/api/bot/snapshots?token=' + token, function (data) {
             if (data === 'no bot') {
