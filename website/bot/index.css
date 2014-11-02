@@ -74,3 +74,7 @@
 .inactive {
     opacity: 0.1;
 }
+
+.table.nofirst tr:first-child td {
+    border: 0;
+}

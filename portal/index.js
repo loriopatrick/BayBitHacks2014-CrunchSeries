@@ -9,20 +9,6 @@ var app = express();
 app.use('/', express.static(path.join(__dirname, '../website')));
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use('/api', function (req, res, next) {
-    if (!req.query.code) {
-        return res.redirect('/');
-    }
-
-    var users = database.mongo.collection('users');
-    users.findOne({code: req.query.code}, function (err, user) {
-        if (err) throw err;
-        if (!user) return res.redirect('/');
-        req.user = user;
-        next();
-    });
-});
-
 require('./auth')(app);
 
 var bots = {};
@@ -39,7 +25,7 @@ app.post('/api/run-bot', function (req, res) {
 
     // todo: update bot code
 
-    var bot = bots[req.user.code] = new Bot(code, req.user.code, 3000);
+    var bot = bots[req.user.code] = new Bot(code, req.user.loginKey, 3000);
     res.send('bot started');
 });
 
@@ -63,12 +49,11 @@ app.post('/api/bot/shutdown', function (req, res) {
     res.send('shutting down');
 });
 
-app.get('/api/get-code', function (req, res) {
-    if (req.user.botCode) {
-        return res.send(req.user.botCode);
-    }
-
-    res.send('\nbot.setInit(function (context) {\n  context.count = 0;\n});\n\nbot.useStat(function (data, stats, context) {\n  stats.price2 = data.price / 2;\n  context.count += 1;\n});\n\nbot.setStrategy(function (data, stats, context) {\n  if (Math.random() < 0.1) {\n    bot.buy(1);\n  } else if (Math.random() < 0.1) {\n    bot.sell(1);\n  }\n});\n');
+app.get('/api/get-state', function (req, res) {
+    return res.send({
+        settings: req.user.settings,
+        code: req.user.code
+    });
 });
 
-app.listen(parseInt(5050));
+app.listen(5050);

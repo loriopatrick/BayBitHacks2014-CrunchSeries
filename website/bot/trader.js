@@ -1,4 +1,4 @@
-var code = window.location.href.split('code=')[1];
+var token = window.location.href.split('token=')[1];
 
 var mirror = null;
 var data = [
@@ -7,10 +7,14 @@ var data = [
 ];
 var lastTime = 0;
 
+var settings = null;
+
 $(function () {
-    $.get('/api/get-code?code=' + code, function (code) {
+    $.get('/api/get-state?token=' + token, function (state) {
+        settings = state.settings;
+
         mirror = CodeMirror($('#code').get(0), {
-            value: code,
+            value: state.code,
             mode: 'javascript',
             viewportMargin: Infinity,
             lineWrapping: true
@@ -20,6 +24,10 @@ $(function () {
         pollData(); // tie into any current running bots
     });
 });
+
+function openSettings() {
+    $('#settings').modal();
+}
 
 function simulate() {
 }
@@ -32,7 +40,7 @@ function liveTrade() {
 
 function run() {
     reset();
-    $.post('/api/run-bot?code=' + code, {code: mirror.getValue()});
+    $.post('/api/run-bot?token=' + token, {code: mirror.getValue()});
     pollData();
 }
 
@@ -52,7 +60,7 @@ function reset() {
 function pollData() {
     var currentIndex = -1;
     var interval = setInterval(function () {
-        $.get('/api/bot/snapshots?code=' + code, function (data) {
+        $.get('/api/bot/snapshots?token=' + token, function (data) {
             if (data === 'no bot') {
                 return clearInterval(interval);
             }
