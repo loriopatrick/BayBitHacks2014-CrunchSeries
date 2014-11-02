@@ -125,6 +125,7 @@ function stop() {
 
 function run(type) {
     reset();
+    renderLoad();
     $.ajax({
         type: 'POST',
         url: '/api/code?token=' + token,
@@ -132,7 +133,6 @@ function run(type) {
         contentType: 'application/json; charset=utf-8',
         success: function () {
             console.log('updated code', arguments);
-
             $.ajax({
                 type: 'POST',
                 url: '/api/run?type=' + type + '&token=' + token,
@@ -143,6 +143,14 @@ function run(type) {
             });
         }
     });
+}
+
+function renderLoad() {
+    $('#loading').css({display: 'block'});
+}
+
+function renderNoLoad() {
+    $('#loading').css({display: 'none'});
 }
 
 function renderRunningControls() {
@@ -182,6 +190,7 @@ function pollData() {
             setRunning(true);
 
             if (data.snapshots.length > currentIndex) {
+                renderNoLoad();
                 updateData(data.snapshots, currentIndex);
                 currentIndex = data.snapshots.length;
             }

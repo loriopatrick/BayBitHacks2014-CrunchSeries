@@ -94,3 +94,27 @@
 .table.nofirst tr:first-child td {
     border: 0;
 }
+
+#loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 50;
+    background: rgba(255, 255, 255, 0.79);
+}
+
+#loading > .spinner {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 1px;
+    height: 1px;
+}
+
+#loading > .spinner > div {
+    position: absolute;
+    top: -45px;
+    left: -45px;
+}
