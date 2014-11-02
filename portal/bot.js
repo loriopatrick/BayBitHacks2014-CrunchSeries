@@ -21,6 +21,8 @@ module.exports = function (attr) {
     var ready = false;
     var running = false;
 
+    var badBot = false;
+
     ncp(BOT_SRC, dest, function (err) {
         if (err) {
             console.log('copy error', err);
@@ -40,8 +42,8 @@ module.exports = function (attr) {
     var command = [
         path.join(dest + '/index.js'),
         port,
-        '"' + type + '"',
-        '"' + accessToken + '"',
+            '"' + type + '"',
+            '"' + accessToken + '"',
         settings.init.usd,
         settings.init.btc,
         settings.testRange.from,
@@ -51,10 +53,17 @@ module.exports = function (attr) {
     ].join(' ');
 
     function spawn() {
-        childProcess.exec('node ' + command);
-        setTimeout(function () {
+        console.log('spawn bot', command);
+        var process = childProcess.exec('node ' + command);
+        process.on('error', function (error) {
+            console.log('bot error', error);
+            badBot = error;
+        });
+
+        process.stdout.on('data', function () {
+            console.log('bot spawned');
             ready = true;
-        }, 1000);
+        });
     }
 
     this.getSnapshots = function (callback) {
@@ -62,7 +71,10 @@ module.exports = function (attr) {
 
         var self = this;
         request.get('http://localhost:' + port + '/snapshots', function (error, response, body) {
-            if (error) return callback('bad bot');
+            if (error) {
+                console.log('bad bot', badBot);
+                return callback('bad bot');
+            }
 
             var data = JSON.parse(body);
             callback(data);
