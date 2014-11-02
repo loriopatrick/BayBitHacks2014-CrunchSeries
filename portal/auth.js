@@ -47,6 +47,7 @@ function createUser(accessToken, callback) {
                 user = newUser();
                 user.accessToken = token;
                 user.expire = new Date().getTime() + accessToken['expires_in'] * 1000;
+                user.userId = userId;
 
                 users.insert(user, function (err) {
                     if (err) throw err;
