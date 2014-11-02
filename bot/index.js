@@ -1,4 +1,3 @@
-var process = require('process');
 var express = require('express');
 var backend = require('./sim');
 
@@ -11,7 +10,18 @@ var bot = require('./bot');
 
 backend.prep(function () {
     bot.setup(backend);
-    var sContext = require('./strategy').context;
+    bot.useStat(function (data, stats, context) {
+        if (!context.firstPrice) {
+            context.firstPrice = data.price;
+            context.firstBalance = data.balance.usd + data.balance.btc * data.price;
+        }
+
+        stats.pricePerformance = data.price / context.firstPrice;
+        stats.balancePerformance = (data.balance.usd + data.balance.btc * data.price) / context.firstBalance;
+    });
+
+    require('./strategy');
+
     bot.useStat(function (data, stats, context) {
         snapshots.push(clone({
             data: data,
@@ -20,11 +30,7 @@ backend.prep(function () {
         }));
     });
 
-    bot.start(0, 10, function (context) {
-        for (var key in sContext) {
-            context[key] = sContext[key];
-        }
-    });
+    bot.start(0, 100);
 });
 
 function clone(a) {
@@ -32,7 +38,7 @@ function clone(a) {
 }
 
 app.get('/snapshots', function (req, res) {
-    res.send({snapshots: snapshots, running: bot.isRunning()});
+    res.send({snapshots: snapshots, running: bot.isRunning(), newSnap: currentSnap});
     currentSnap = snapshots.length;
 });
 

@@ -25,10 +25,39 @@ app.use('/api', function (req, res, next) {
 
 require('./auth')(app);
 
-app.use('/api/set-bot', function (req, res) {
-    var code = req.code;
-    var bot = new Bot(code);
-    res.send('something...');
+var bots = {};
+
+app.post('/api/set-bot', function (req, res) {
+    var code = req.body.code;
+
+    if (req.user.code in bots) {
+        bots[req.user.code].stop();
+    }
+
+    var bot = bots[req.user.code] = new Bot(code, req.user.code);
+    bot.start();
+
+    res.send('bot started');
+});
+
+app.use('/api/bot', function (req, res, next) {
+    var userCode = req.user.code;
+    if (!(userCode in bots)) {
+        return res.send('no bot');
+    }
+    req.bot = bots[userCode];
+    next();
+});
+
+app.get('/api/bot/snapshots', function (req, res) {
+    req.bot.getSnapshots(function (data) {
+        res.send(data);
+    });
+});
+
+app.post('/api/bot/shutdown', function (req, res) {
+    req.bot.shutdown();
+    res.send('shutting down');
 });
 
 app.listen(5050);

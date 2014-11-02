@@ -12,6 +12,10 @@ var orderExecutor = null;
 
 var context = {};
 
+var init = null;
+
+var currentPrice = 0;
+
 exports.setup = function (backend) {
     priceSource = backend.priceSource;
     orderExecutor = backend.orderExecutor;
@@ -25,12 +29,20 @@ exports.setStrategy = function (strat) {
     strategy = strat;
 };
 
+exports.setInit = function (fn) {
+    init = fn;
+};
+
 exports.buy = function (quantity) {
-    currentBtcOrder += quantity;
+    if (!quantity) return;
+    currentBtcOrder = Math.min(currentBtcOrder + quantity, usd / currentPrice.price);
+//    console.log(quantity, currentBtcOrder, usd, currentPrice);
 };
 
 exports.sell = function (quantity) {
-    currentBtcOrder -= quantity;
+    if (!quantity) return;
+    currentBtcOrder = Math.max(currentBtcOrder - quantity, -btc);
+//    console.log(quantity, currentBtcOrder, usd, currentPrice);
 };
 
 exports.isRunning = function () {
@@ -55,7 +67,7 @@ function tick(priceData, orderResult) {
         statistics[i](data, stats, context);
     }
 
-    strategy(data, stats, context);
+    if (strategy) strategy(data, stats, context);
     if (shutdown) return doShutdown();
 
     next();
@@ -65,6 +77,8 @@ function next() {
     orderExecutor(currentBtcOrder, function (orderResult) {
         currentBtcOrder = 0;
         priceSource(function (price) {
+            currentPrice = price;
+
             if (orderResult) {
                 usd += orderResult.usdDelta;
                 btc += orderResult.btcDelta;
@@ -75,14 +89,14 @@ function next() {
     });
 }
 
-exports.start = function (initBtc, initUsd, init) {
+exports.start = function (initBtc, initUsd) {
     currentBtcOrder = 0;
     btc = initBtc;
     usd = initUsd;
 
     running = true;
 
-    init(context);
+    if (init) init(context);
     next();
 };
 
