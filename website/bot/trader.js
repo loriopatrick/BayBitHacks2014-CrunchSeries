@@ -1,26 +1,40 @@
 var code = window.location.href.split('code=')[1];
 
 var mirror = null;
-var data = null;
+var data = [[],[]];
 var lastTime = 0;
 
 $(function () {
-//    chart();
-    mirror = CodeMirror($('#code').get(0), {
-        value: initCode,
-        mode: 'javascript'
+    $.get('/api/get-code?code=' + code, function (code) {
+        mirror = CodeMirror($('#code').get(0), {
+            value: code,
+            mode: 'javascript',
+            viewportMargin: Infinity,
+            lineWrapping: true
+        });
     });
+
+    reset();
+    pollData(); // tie into any current running bots
 });
 
 function run() {
-    data = null;
+    reset();
+    $.post('/api/run-bot?code=' + code, {code: mirror.getValue()});
+    pollData();
+}
+
+function reset() {
+    data = [[],[]];
     lastTime = 0;
-    $.post('/api/set-bot?code=' + code, {code: mirror.getValue()}, function (data, text) {
-        console.log(text);
-    });
+    $('#trans').empty();
+    chart($('#chart'), data);
+    $('#usd-balance').html('');
+    $('#btc-balance').html('');
+}
 
+function pollData() {
     var currentIndex = -1;
-
     var interval = setInterval(function () {
         $.get('/api/bot/snapshots?code=' + code, function (data) {
             if (data === 'no bot') {
@@ -47,15 +61,6 @@ function run() {
 function updateData(snapshots, index) {
     if (index == -1) return;
 
-    console.log(index);
-
-    if (data == null) {
-        data = [
-            [],
-            []
-        ];
-    }
-
     for (var i = index; i < snapshots.length; ++i) {
         var s = snapshots[i];
         if (s.data.time < lastTime) continue;
@@ -74,7 +79,13 @@ function updateData(snapshots, index) {
         data[1].push([s.data.time, s.stats.balancePerformance]);
     }
 
-    chart();
+    if (snapshots.length) {
+        var last = snapshots[snapshots.length - 1];
+        $('#usd-balance').html(last.data.balance.usd);
+        $('#btc-balance').html(last.data.balance.btc);
+    }
+
+    chart($('#chart'), data);
 }
 
 function addTransaction(transaction) {
@@ -89,23 +100,22 @@ function addTransaction(transaction) {
     console.log(transaction);
 }
 
-function chart() {
-    $.plot($("#chart"), data, {
+function chart(chart, data) {
+    $.plot(chart, data, {
         series: {
             lines: { show: true, fill: false},
             points: { show: false}
         },
         grid: { color: 'transparent' },
         xaxis: {
-            color: 'black',
-            font: { color: 'black', family: 'sans-serif', size: 11}
+            color: 'rgba(0, 0, 0, 0.5)',
+            font: { color: 'black', family: 'sans-serif', size: 11},
+            mode: 'time'
         },
         yaxis: {
-            color: 'black',
+            color: 'rgba(0, 0, 0, 0.5)',
             font: { color: 'black', family: 'sans-serif', size: 11}
         },
         colors: ['rgb(143, 198, 242)', 'rgb(242, 198, 143)']
     });
 }
-
-var initCode = '\nbot.setInit(function (context) {\n  context.count = 0;\n});\n\nbot.useStat(function (data, stats, context) {\n  stats.price2 = data.price / 2;\n  context.count += 1;\n});\n\nbot.setStrategy(function (data, stats, context) {\n  if (Math.random() < 0.1) {\n    bot.buy(1);\n  } else if (Math.random() < 0.1) {\n    bot.sell(1);\n  }\n});\n';

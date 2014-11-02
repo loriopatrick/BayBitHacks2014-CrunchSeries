@@ -37,12 +37,20 @@ module.exports = function (strategy, code) {
     this.getSnapshots = function (callback) {
         if (!ready || !running) return callback({snapshots: [], running: false, newSnap: -1});
 
+        var self = this;
+
         request.get('http://localhost:3000/snapshots', function (error, response, body) {
             if (error) {
                 return callback('bad bot');
             }
 
-            callback(JSON.parse(body));
+            var data = JSON.parse(body);
+
+            callback(data);
+
+            if (!data.running && data.snapshots.length > 0) {
+                self.stop();
+            }
         });
     };
 
@@ -51,7 +59,7 @@ module.exports = function (strategy, code) {
             var self = this;
             return onready.push(function () {
                 self.start();
-            })
+            });
         }
 
         childProcess.spawn('node', [path.join(dest + '/index.js')]);
@@ -59,8 +67,8 @@ module.exports = function (strategy, code) {
     };
 
     this.stop = function () {
-        request.post('http://localhost:3000/shutdown', function (error) {
-            if (error) throw error;
-        });
+        request.post('http://localhost:3000/shutdown');
+        running = false;
+        ready = false;
     };
 };

@@ -27,11 +27,14 @@ require('./auth')(app);
 
 var bots = {};
 
-app.post('/api/set-bot', function (req, res) {
+app.post('/api/run-bot', function (req, res) {
     var code = req.body.code;
 
     if (req.user.code in bots) {
-        bots[req.user.code].stop();
+        if (bots[req.user.code].ready) {
+            bots[req.user.code].stop();
+        }
+        bots[req.user.code] = null;
     }
 
     var bot = bots[req.user.code] = new Bot(code, req.user.code);
@@ -56,8 +59,16 @@ app.get('/api/bot/snapshots', function (req, res) {
 });
 
 app.post('/api/bot/shutdown', function (req, res) {
-    req.bot.shutdown();
+    req.bot.stop();
     res.send('shutting down');
+});
+
+app.get('/api/get-code', function (req, res) {
+    if (req.user.botCode) {
+        return res.send(req.user.botCode);
+    }
+
+    res.send('\nbot.setInit(function (context) {\n  context.count = 0;\n});\n\nbot.useStat(function (data, stats, context) {\n  stats.price2 = data.price / 2;\n  context.count += 1;\n});\n\nbot.setStrategy(function (data, stats, context) {\n  if (Math.random() < 0.1) {\n    bot.buy(1);\n  } else if (Math.random() < 0.1) {\n    bot.sell(1);\n  }\n});\n');
 });
 
 app.listen(5050);

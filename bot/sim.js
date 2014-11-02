@@ -24,7 +24,7 @@ exports.prep = function (done) {
     var page = 0;
 
     function getNext(callback) {
-        request.get('https://api.coinbase.com/v1/prices/historical?page=' + page, function (error, response, body) {
+        cacheRequest('https://api.coinbase.com/v1/prices/historical?page=' + page, function (error, response, body) {
             var rawPrices = body.split('\n');
             for (var i = 0; i < rawPrices.length; ++i) {
                 var parts = rawPrices[i].split(',');
@@ -46,3 +46,9 @@ exports.prep = function (done) {
 
     getNext(next);
 };
+
+var fs = require('fs');
+
+function cacheRequest(url, callback) {
+    request(url, callback);
+}

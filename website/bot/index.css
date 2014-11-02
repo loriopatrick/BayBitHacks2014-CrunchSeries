@@ -3,22 +3,70 @@
     height: 200px;
 }
 
+.header {
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 30px;
+    background: #2d62ae;
+}
+
 .left {
     position: absolute;
-    top: 0;
+    top: 30px;
     left: 0;
     width: 50%;
     bottom: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .right {
     position: absolute;
-    top: 0;
+    top: 30px;
     right: 0;
     width: 50%;
     bottom: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .content {
-    padding: 10px;
+    padding: 0 10px;
+}
+
+.CodeMirror {
+    height: auto;
+}
+.CodeMirror-scroll {
+    overflow-y: hidden;
+    overflow-x: auto;
+}
+
+.logo {
+    font-weight: bold;
+    color: white;
+    padding: 5px;
+    display: block;
+    float: left;
+}
+
+.task-bar {
+    float: right;
+    padding-right: 50px;
+}
+
+.task-bar a {
+    text-decoration: none;
+    color: white;
+    padding: 5px;
+    height: 30px;
+    float: left;
+    margin: 0 10px;
+    overflow: hidden;
+}
+
+.task-bar a:hover {
+    background: #4d4d4d;
+    color: #ffffff;
 }

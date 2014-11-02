@@ -1,31 +1,61 @@
 <!DOCTYPE html>
-<html ng-app="bot">
+<html>
 <head lang="en">
     <meta charset="UTF-8">
     <title></title>
     <script src="lib/jquery/dist/jquery.min.js"></script>
     <script src="lib/flot/jquery.flot.js"></script>
+    <script src="lib/flot/jquery.flot.time.js"></script>
     <script src="lib/codemirror/lib/codemirror.js"></script>
     <script src="lib/codemirror/mode/javascript/javascript.js"></script>
-    <script src="bot.js"></script>
+    <script src="trader.js"></script>
 
     <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="lib/codemirror/lib/codemirror.css"/>
     <link rel="stylesheet" href="lib/codemirror/theme/base16-dark.css"/>
 
     <link rel="stylesheet" href="index.css"/>
-
-    <script>
-
-    </script>
 </head>
 <body>
+<div class="header">
+    <span class="logo">Crunch Series</span>
+    <div class="task-bar">
+        <a href="#" onclick="run()"><span class="glyphicon glyphicon-eye-open"></span> Back Test</a>
+        <a href="#" onclick="run()"><span class="glyphicon glyphicon-flash"></span> Simulate</a>
+        <a href="#" onclick="run()"><span class="glyphicon glyphicon-usd"></span> Live Trade</a>
+    </div>
+</div>
 <div class="left">
     <div class="content">
         <div class="row">
             <div class="col-sm-12">
                 <h2>Performance</h2>
                 <div id="chart"></div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <h2>Balance</h2>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>USD</th>
+                        <th>BTC</th>
+                    </tr>
+                    </thead>
+                    <tr>
+                        <td id="usd-balance"></td>
+                        <td id="btc-balance"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <h2>Statistics</h2>
+                <div id="statistics"></div>
             </div>
         </div>
 
@@ -50,7 +80,6 @@
 </div>
 <div class="right">
     <div class="content">
-        <a href="#" onclick="run()">Run</a>
         <div id="code"></div>
     </div>
 </div>
