@@ -29,7 +29,7 @@ function createUser(accessToken, callback) {
     request.get('https://api.coinbase.com/v1/users?access_token=' + token,
         function (error, response, body) {
             var data = JSON.parse(body);
-            var userId = data['users'][0].id;
+            var userId = data['users'][0].user.id;
 
             users.findOne({userId: userId}, function (err, user) {
                 if (err) throw err;
