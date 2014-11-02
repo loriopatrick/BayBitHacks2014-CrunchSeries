@@ -177,17 +177,18 @@ function setRunning(running) {
 
 function pollData() {
     var currentIndex = 0;
-    var interval = setInterval(function () {
+
+    function next() {
         $.get('/api/bot/snapshots?token=' + token, function (data) {
             if (data === 'no bot') {
                 setRunning(false);
-                return clearInterval(interval);
+                return;
             }
 
             if (data === 'bad bot') {
                 setRunning(false);
                 alert('There is an error in your bot');
-                return clearInterval(interval);
+                return;
             }
 
             currentType = data.type;
@@ -198,8 +199,12 @@ function pollData() {
                 updateData(data.snapshots, currentIndex);
                 currentIndex = data.snapshots.length;
             }
+
+            setTimeout(next, 500);
         });
-    }, 500);
+    }
+
+    next();
 }
 
 function updateData(snapshots, index) {
